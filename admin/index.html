@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Admin</title>
+</head>
+<body>
+  <h1>Messages</h1>
+  <table id="table" border="1">
+    <thead>
+      <tr><th>Nickname</th><th>Content</th><th>Approved</th><th>Action</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    async function load() {
+      const res = await fetch('/api/messages');
+      const data = await res.json();
+      const tbody = document.querySelector('#table tbody');
+      tbody.innerHTML = '';
+      data.forEach(msg => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + msg.nickname + '</td><td>' + msg.content + '</td><td>' + msg.approved + '</td>' +
+          '<td><button onclick="approve(' + msg.id + ')">Approve</button></td>';
+        tbody.appendChild(tr);
+      });
+    }
+    async function approve(id) {
+      await fetch('/api/messages/' + id + '/approve', { method: 'POST' });
+      load();
+    }
+    load();
+  </script>
+</body>
+</html>
